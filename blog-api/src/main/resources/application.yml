@@ -1,0 +1,19 @@
+#服务器
+server:
+  port: 8888
+#数据库配置
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.83.128:3306/my_blog?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    username: root
+    password: password
+#mp配置
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**Mapper.xml
+  # 打印SQL语句
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      table-prefix: blog_
