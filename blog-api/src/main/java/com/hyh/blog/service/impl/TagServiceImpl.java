@@ -3,17 +3,21 @@ package com.hyh.blog.service.impl;
 import com.hyh.blog.dao.mapper.TagMapper;
 import com.hyh.blog.dao.pojo.Tag;
 import com.hyh.blog.service.TagService;
+import com.hyh.blog.vo.Result;
 import com.hyh.blog.vo.TagVo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * @author huyuhui
  */
+@Slf4j
 @Service
 public class TagServiceImpl implements TagService {
     @Resource
@@ -24,6 +28,18 @@ public class TagServiceImpl implements TagService {
         List<Tag> tagList = tagMapper.findTagByArticleId(id);
         List<TagVo> tagVoList =copyList(tagList);
         return tagVoList;
+    }
+
+    @Override
+    public Result hotTags(int limit) {
+        List<Long> tagsId = tagMapper.findHotTagsId(limit);
+        //如果标签为空，则返回一个空集合
+        if(tagsId.isEmpty()){
+            return Result.success(Collections.emptyList());
+        }
+        List<Tag> tags = tagMapper.selectBatchIds(tagsId);
+//        log.info("tagsId=>{},{}",tagsId,tags);
+        return Result.success(tags);
     }
 
     private List<TagVo> copyList(List<Tag> tagList) {
