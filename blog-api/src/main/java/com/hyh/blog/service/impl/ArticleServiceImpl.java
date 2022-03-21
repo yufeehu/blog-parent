@@ -47,6 +47,17 @@ public class ArticleServiceImpl implements ArticleService {
         return Result.success(articleVoList);
     }
 
+    @Override
+    public Result getHotArticles(int limit) {
+        LambdaQueryWrapper<Article> wrapper = new LambdaQueryWrapper<>();
+        wrapper
+            .select(Article::getId,Article::getTitle)
+            .orderByDesc(Article::getViewCounts)
+            .last("limit "+limit);
+        List<Article> articles = articleMapper.selectList(wrapper);
+        return Result.success(copyList(articles,false,false));
+    }
+
     /**
      * @param records
      * @return

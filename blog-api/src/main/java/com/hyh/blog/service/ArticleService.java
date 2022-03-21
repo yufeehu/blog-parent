@@ -13,4 +13,12 @@ public interface ArticleService {
      * @return
      */
     Result listArticlePage(PageParams pageParams);
+
+    /**
+     * 最热门文章查询，根据浏览数
+     * select id,title from article order by view_counts desc limit 5
+     * @param limit 限制条数
+     * @return
+     */
+    Result getHotArticles(int limit);
 }
