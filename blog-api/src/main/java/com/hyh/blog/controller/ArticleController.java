@@ -29,4 +29,11 @@ public class ArticleController {
         int limit = 5;
         return articleService.getHotArticles(limit);
     }
+
+    @PostMapping("new")
+    public Result newArticles(){
+        //最热门的文章，限制前5条
+        int limit = 5;
+        return articleService.getNewArticles(limit);
+    }
 }
