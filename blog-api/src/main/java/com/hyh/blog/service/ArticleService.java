@@ -28,4 +28,10 @@ public interface ArticleService {
      * @return
      */
     Result getNewArticles(int limit);
+
+    /**
+     * 文章归档
+     * @return
+     */
+    Result listArchives();
 }

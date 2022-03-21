@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hyh.blog.dao.mapper.ArticleMapper;
 import com.hyh.blog.dao.pojo.Article;
 import com.hyh.blog.dao.pojo.SysUser;
+import com.hyh.blog.dos.Archives;
 import com.hyh.blog.service.ArticleService;
 import com.hyh.blog.service.SysUserService;
 import com.hyh.blog.service.TagService;
@@ -67,6 +68,12 @@ public class ArticleServiceImpl implements ArticleService {
                 .last("limit "+limit);
         List<Article> articles = articleMapper.selectList(wrapper);
         return Result.success(copyList(articles,false,false));
+    }
+
+    @Override
+    public Result listArchives() {
+        List<Archives> archivesList = articleMapper.listArchives();
+        return Result.success(archivesList);
     }
 
     /**
