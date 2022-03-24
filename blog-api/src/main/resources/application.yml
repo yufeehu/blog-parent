@@ -17,3 +17,8 @@ mybatis-plus:
   global-config:
     db-config:
       table-prefix: blog_
+jwt:
+  # 加密秘钥
+  secret: 123456hyhblog!@#$$
+  # token有效时长，1天，单位秒
+  expire: 86400
