@@ -42,6 +42,12 @@
                 <artifactId>jjwt</artifactId>
                 <version>0.9.1</version>
             </dependency>
+            <!--加密工具包-->
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>1.15</version>
+            </dependency>
             <!--一堆工具包-->
             <dependency>
                 <groupId>com.alibaba</groupId>

@@ -8,6 +8,9 @@ spring:
     url: jdbc:mysql://192.168.83.128:3306/my_blog?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
     username: root
     password: password
+  redis:
+    host: 192.168.83.128
+    port: 6379
 #mp配置
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**Mapper.xml

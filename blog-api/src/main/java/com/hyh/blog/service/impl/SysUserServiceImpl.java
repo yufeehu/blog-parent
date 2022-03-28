@@ -1,5 +1,6 @@
 package com.hyh.blog.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.hyh.blog.dao.mapper.SysUserMapper;
 import com.hyh.blog.dao.pojo.SysUser;
 import com.hyh.blog.service.SysUserService;
@@ -26,5 +27,17 @@ public class SysUserServiceImpl implements SysUserService {
             sysUser.setNickname("佚名");
         }
         return sysUser;
+    }
+
+    @Override
+    public SysUser findUser(String account, String password) {
+        LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper();
+        wrapper
+                .eq(SysUser::getAccount,account)
+                .eq(SysUser::getPassword,password)
+                //查询用户账号,id,是否管理员,昵称
+                .select(SysUser::getAccount,SysUser::getId,SysUser::getAdmin, SysUser::getNickname)
+                .last("limit 1");
+        return null;
     }
 }
