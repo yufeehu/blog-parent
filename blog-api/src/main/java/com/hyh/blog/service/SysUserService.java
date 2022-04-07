@@ -1,6 +1,7 @@
 package com.hyh.blog.service;
 
 import com.hyh.blog.dao.pojo.SysUser;
+import com.hyh.blog.vo.Result;
 
 /**
  * @author huyuhui
@@ -20,4 +21,6 @@ public interface SysUserService {
      * @return
      */
     SysUser findUser(String account, String password);
+
+    Result findUserByToken(String token);
 }

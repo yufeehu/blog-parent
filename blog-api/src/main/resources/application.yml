@@ -11,6 +11,7 @@ spring:
   redis:
     host: 192.168.83.128
     port: 6379
+    password: 12345
 #mp配置
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**Mapper.xml

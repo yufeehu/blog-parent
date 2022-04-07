@@ -8,6 +8,7 @@ import com.hyh.blog.util.JwtUtils;
 import com.hyh.blog.vo.ErrorCode;
 import com.hyh.blog.vo.Result;
 import com.hyh.blog.vo.param.LoginParam;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -19,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author huyuhui
  */
+@Slf4j
 @Service
 public class LoginServiceImpl implements LoginService {
     @Resource
@@ -44,17 +46,19 @@ public class LoginServiceImpl implements LoginService {
          */
         String account = loginParam.getAccount();
         String password = loginParam.getPassword();
-        if(StringUtils.isNotBlank(account) || StringUtils.isNotBlank(password)){
+        log.info("加密前******==>{},{}",account,password);
+        if(StringUtils.isBlank(account) || StringUtils.isBlank(password)){
             return Result.fail(ErrorCode.PARAMS_ERROR.getCode(),ErrorCode.PARAMS_ERROR.getMsg());
         }
         String secretPwd = DigestUtils.md5Hex(password + salt);
+        log.info("用户名：{},密码：{}",account,secretPwd);
         SysUser user = sysUserService.findUser(account, secretPwd);
         if(user == null){
             return Result.fail(ErrorCode.ACCOUNT_PWD_NOT_EXIST.getCode(),ErrorCode.ACCOUNT_PWD_NOT_EXIST.getMsg());
         }
         //登录成功，使用JWT生成token，将token和用户信息缓存到redis中,返回token
         String token = jwtUtils.createToken(user.getId());
-        redisTemplate.opsForValue().set("TOKEN"+token, JSON.toJSONString(user),1, TimeUnit.DAYS);
+        redisTemplate.opsForValue().set("TOKEN_"+token, JSON.toJSONString(user),1, TimeUnit.DAYS);
         return Result.success(token);
     }
 }
