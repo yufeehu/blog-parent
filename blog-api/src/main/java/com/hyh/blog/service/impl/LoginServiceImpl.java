@@ -61,4 +61,11 @@ public class LoginServiceImpl implements LoginService {
         redisTemplate.opsForValue().set("TOKEN_"+token, JSON.toJSONString(user),1, TimeUnit.DAYS);
         return Result.success(token);
     }
+
+    @Override
+    public Result logout(String token) {
+        log.info("token====>{}",token);
+        redisTemplate.delete("TOKEN_"+token);
+        return Result.success("退出登录成功！");
+    }
 }
