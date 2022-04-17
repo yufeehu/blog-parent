@@ -1,5 +1,8 @@
 package com.hyh.blog.dao.pojo;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.sun.mail.imap.protocol.ID;
 import lombok.Data;
 
 /**
@@ -7,6 +10,11 @@ import lombok.Data;
  */
 @Data
 public class SysUser {
+    /**
+     * ID
+     * 这里id使用分布式id(雪花算法),如果需要自增id,则修改type为IdType.AUTO
+     */
+    @TableId(type = IdType.ASSIGN_ID)
     private Long id;
 
     /**

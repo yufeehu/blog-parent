@@ -13,6 +13,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.annotation.Resource;
 import java.util.concurrent.TimeUnit;
@@ -67,5 +68,44 @@ public class LoginServiceImpl implements LoginService {
         log.info("token====>{}",token);
         redisTemplate.delete("TOKEN_"+token);
         return Result.success("退出登录成功！");
+    }
+
+    @Override
+    public Result register(LoginParam loginParam) {
+        /**
+         * 1.判断参数是否合法
+         * 2.判断账号是否存在，如果存在则返回账号已被注册
+         * 3.账号不存在，则注册账号
+         * 4.生成token
+         * 5.token存入redis,并返回token
+         * 6.加上事务，以上过程中间出现问题，注册用户都要回滚
+         */
+        String account = loginParam.getAccount();
+        String nickname = loginParam.getNickname();
+        String password = loginParam.getPassword();
+        if(StringUtils.isBlank(account)
+                || StringUtils.isBlank(nickname)
+                || StringUtils.isBlank(password)){
+            return Result.fail(ErrorCode.PARAMS_ERROR.getCode(),ErrorCode.PARAMS_ERROR.getMsg());
+        }
+        SysUser judgeUser = sysUserService.findUserByAccount(account);
+        if(judgeUser != null){
+            return Result.fail(ErrorCode.ACCOUNT_EXIST.getCode(),"账号已经被注册！");
+        }
+        SysUser user = new SysUser();
+        user.setAccount(account);
+        user.setNickname(nickname);
+        user.setPassword(DigestUtils.md5Hex(password+salt));
+        user.setCreateDate(System.currentTimeMillis());
+        user.setLastLogin(System.currentTimeMillis());
+        user.setAvatar("/static/img/logo.b3a48c0.png");
+        user.setAdmin(1);
+        user.setDeleted(0);
+        user.setSalt(salt);
+        user.setStatus("");
+        user.setEmail("");
+        sysUserService.saveUser(user);
+        String token = jwtUtils.createToken(user.getId());
+        return Result.success(token);
     }
 }

@@ -9,14 +9,17 @@ import com.hyh.blog.vo.ErrorCode;
 import com.hyh.blog.vo.LoginUserVo;
 import com.hyh.blog.vo.Result;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Objects;
 
 /**
  * @author huyuhui
+ * Transactional 开启事务
  */
 @Service
+@Transactional
 public class SysUserServiceImpl implements SysUserService {
 
     @Resource
@@ -38,7 +41,7 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     public SysUser findUser(String account, String password) {
-        LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper();
+        LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<>();
         wrapper
                 .eq(SysUser::getAccount,account)
                 .eq(SysUser::getPassword,password)
@@ -66,5 +69,18 @@ public class SysUserServiceImpl implements SysUserService {
         userVo.setAvatar(user.getAvatar());
         userVo.setNickname(user.getNickname());
         return Result.success(userVo);
+    }
+
+    @Override
+    public SysUser findUserByAccount(String account) {
+        LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(SysUser::getAccount,account)
+                .last("limit 1");
+        return sysUserMapper.selectOne(wrapper);
+    }
+
+    @Override
+    public void saveUser(SysUser user) {
+        sysUserMapper.insert(user);
     }
 }
