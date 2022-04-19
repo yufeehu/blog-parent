@@ -106,6 +106,7 @@ public class LoginServiceImpl implements LoginService {
         user.setEmail("");
         sysUserService.saveUser(user);
         String token = jwtUtils.createToken(user.getId());
+        redisTemplate.opsForValue().set("TOKEN_"+token,JSON.toJSONString(user),1,TimeUnit.DAYS);
         return Result.success(token);
     }
 }
