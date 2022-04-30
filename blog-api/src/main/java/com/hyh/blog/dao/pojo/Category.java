@@ -4,13 +4,16 @@ import lombok.Data;
 
 /**
  * @author huyuhui
- * 文章标签
+ * 文章分类
  */
 @Data
-public class Tag {
+public class Category {
+
     private Long id;
 
     private String avatar;
 
-    private String tagName;
+    private String categoryName;
+
+    private String description;
 }

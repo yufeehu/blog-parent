@@ -7,6 +7,7 @@ import lombok.Data;
 
 /**
  * @author huyuhui
+ * 用户信息
  */
 @Data
 public class SysUser {

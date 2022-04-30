@@ -2,16 +2,17 @@ package com.hyh.blog.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.hyh.blog.dao.mapper.ArticleBodyMapper;
 import com.hyh.blog.dao.mapper.ArticleMapper;
 import com.hyh.blog.dao.pojo.Article;
+import com.hyh.blog.dao.pojo.ArticleBody;
 import com.hyh.blog.dao.pojo.SysUser;
 import com.hyh.blog.dos.Archives;
 import com.hyh.blog.service.ArticleService;
+import com.hyh.blog.service.CategoryService;
 import com.hyh.blog.service.SysUserService;
 import com.hyh.blog.service.TagService;
-import com.hyh.blog.vo.ArticleVo;
-import com.hyh.blog.vo.Result;
-import com.hyh.blog.vo.TagVo;
+import com.hyh.blog.vo.*;
 import com.hyh.blog.vo.param.PageParams;
 import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
@@ -34,6 +35,12 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Resource
     private SysUserService sysUserService;
+
+    @Resource
+    private ArticleBodyMapper articleBodyMapper;
+
+    @Resource
+    private CategoryService categoryService;
 
     @Override
     public Result listArticlePage(PageParams pageParams) {
@@ -76,6 +83,17 @@ public class ArticleServiceImpl implements ArticleService {
         return Result.success(archivesList);
     }
 
+    @Override
+    public Result findArticleById(Long articleId) {
+        /**
+         * 1. 根据id查询 文章信息
+         * 2. 根据bodyId和categoryid 去做关联查询
+         */
+        Article article = articleMapper.selectById(articleId);
+        ArticleVo articleVo = copy(article,true,true,true,true);
+        return Result.success(articleVo);
+    }
+
     /**
      * @param records
      * @return
@@ -84,6 +102,14 @@ public class ArticleServiceImpl implements ArticleService {
         List<ArticleVo> articleVoList = new ArrayList<>();
         for (Article record : records) {
             articleVoList.add(copy(record, isTag, isAuthor));
+        }
+        return articleVoList;
+    }
+
+    private List<ArticleVo> copyList(List<Article> records, Boolean isTag, Boolean isAuthor,Boolean isBody,Boolean isCategory) {
+        List<ArticleVo> articleVoList = new ArrayList<>();
+        for (Article record : records) {
+            articleVoList.add(copy(record, isTag, isAuthor,isBody,isCategory));
         }
         return articleVoList;
     }
@@ -111,6 +137,54 @@ public class ArticleServiceImpl implements ArticleService {
             articleVo.setAuthor(sysUser.getNickname());
         }
         return articleVo;
+    }
+
+
+    /**
+     *
+     * @param article
+     * @param isTag 是否显示标文章签
+     * @param isAuthor 是否显示文章作者
+     * @param isBody 是否显示文章内容
+     * @param isCategory 是否显示文章类型
+     * @return
+     */
+    private ArticleVo copy(Article article, Boolean isTag, Boolean isAuthor,Boolean isBody,Boolean isCategory) {
+        ArticleVo articleVo = new ArticleVo();
+        //将Article和ArticleVo相同的属性赋值到ArticleVo中(类型和属性名一致才可以)
+        BeanUtils.copyProperties(article, articleVo);
+        articleVo.setCreateDate(new DateTime(article.getCreateDate()).toString("yyyy-MM-dd HH:mm:ss"));
+        if(isTag){
+            Long id = article.getId();
+            List<TagVo> tagVo = tagService.findTagByArticleId(id);
+            articleVo.setTags(tagVo);
+        }
+        if(isAuthor){
+            Long authorId = article.getAuthorId();
+            //根据article表中的作者id去查询sysUser表的作者昵称
+            SysUser sysUser = sysUserService.findUserById(authorId);
+            articleVo.setAuthor(sysUser.getNickname());
+        }
+        if(isBody){
+            Long bodyId = article.getBodyId();
+            articleVo.setBody(findArticleBodyById(bodyId));
+        }
+        if(isCategory){
+            Long categoryId = article.getCategoryId();
+            articleVo.setCategorys(findCategoryById(categoryId));
+        }
+        return articleVo;
+    }
+
+    private CategoryVo findCategoryById(Long categoryId) {
+        return categoryService.findCategoryById(categoryId);
+    }
+
+    private ArticleBodyVo findArticleBodyById(Long bodyId) {
+        ArticleBody articleBody = articleBodyMapper.selectById(bodyId);
+        ArticleBodyVo articleBodyVo = new ArticleBodyVo();
+        articleBodyVo.setContent(articleBody.getContent());
+        return articleBodyVo;
     }
 
 }

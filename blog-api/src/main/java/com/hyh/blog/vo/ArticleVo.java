@@ -52,7 +52,7 @@ public class ArticleVo {
     /**
      *类别id
      */
-    private List<CategoryVo> categorys;
+    private CategoryVo categorys;
 
 
 

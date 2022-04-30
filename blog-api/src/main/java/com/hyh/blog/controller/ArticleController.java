@@ -4,6 +4,7 @@ import com.hyh.blog.service.ArticleService;
 import com.hyh.blog.vo.Result;
 import com.hyh.blog.vo.param.PageParams;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,7 +33,7 @@ public class ArticleController {
 
     @PostMapping("new")
     public Result newArticles(){
-        //最热门的文章，限制前5条
+        //最新的文章，限制前5条
         int limit = 5;
         return articleService.getNewArticles(limit);
     }
@@ -40,6 +41,12 @@ public class ArticleController {
     @PostMapping("listArchives")
     public Result listArchives(){
         return articleService.listArchives();
+    }
+
+    @PostMapping("view/{id}")
+
+    public Result findArticleById(@PathVariable("id") Long articleId){
+        return articleService.findArticleById(articleId);
     }
 
 }

@@ -4,6 +4,7 @@ import lombok.Data;
 
 /**
  * @author huyuhui
+ * 文章信息
  */
 @Data
 public class Article {
