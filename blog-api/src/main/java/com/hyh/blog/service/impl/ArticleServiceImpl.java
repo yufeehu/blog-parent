@@ -8,10 +8,7 @@ import com.hyh.blog.dao.pojo.Article;
 import com.hyh.blog.dao.pojo.ArticleBody;
 import com.hyh.blog.dao.pojo.SysUser;
 import com.hyh.blog.dos.Archives;
-import com.hyh.blog.service.ArticleService;
-import com.hyh.blog.service.CategoryService;
-import com.hyh.blog.service.SysUserService;
-import com.hyh.blog.service.TagService;
+import com.hyh.blog.service.*;
 import com.hyh.blog.vo.*;
 import com.hyh.blog.vo.param.PageParams;
 import org.joda.time.DateTime;
@@ -41,6 +38,9 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Resource
     private CategoryService categoryService;
+
+    @Resource
+    private ThreadService threadService;
 
     @Override
     public Result listArticlePage(PageParams pageParams) {
@@ -87,10 +87,12 @@ public class ArticleServiceImpl implements ArticleService {
     public Result findArticleById(Long articleId) {
         /**
          * 1. 根据id查询 文章信息
-         * 2. 根据bodyId和categoryid 去做关联查询
+         * 2.根据bodyId和categoryid 去做关联查询
+         * 3.阅读数量更新
          */
         Article article = articleMapper.selectById(articleId);
         ArticleVo articleVo = copy(article,true,true,true,true);
+        threadService.updateViewCount(articleMapper,article);
         return Result.success(articleVo);
     }
 

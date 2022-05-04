@@ -26,3 +26,9 @@ jwt:
   secret: 123456hyhblog!@#$$
   # token有效时长，1天，单位秒
   expire: 86400
+thread:
+  pool:
+    corePoolSize: 5
+    maxPoolSize: 20
+    queueCapacity: 2000
+    keepAliveSeconds: 60

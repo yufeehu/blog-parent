@@ -23,12 +23,12 @@ public class ArticleVo {
     /**
      * 评论数量
      */
-    private int commentCounts;
+    private Integer commentCounts;
 
     /**
      * 阅读数量
      */
-    private int viewCounts;
+    private Integer viewCounts;
 
     /**
      * 创建时间

@@ -26,12 +26,12 @@ public class Article {
     /**
      * 评论数量
      */
-    private int commentCounts;
+    private Integer commentCounts;
 
     /**
      * 阅读数量
      */
-    private int viewCounts;
+    private Integer viewCounts;
 
     /**
      * 作者id
@@ -51,7 +51,7 @@ public class Article {
     /**
      * 置顶
      */
-    private int weight = Article_Common;
+    private Integer weight;
 
     /**
      * 创建时间
