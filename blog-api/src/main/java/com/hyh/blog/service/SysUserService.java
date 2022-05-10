@@ -2,6 +2,7 @@ package com.hyh.blog.service;
 
 import com.hyh.blog.dao.pojo.SysUser;
 import com.hyh.blog.vo.Result;
+import com.hyh.blog.vo.UserVo;
 
 /**
  * @author huyuhui
@@ -27,4 +28,6 @@ public interface SysUserService {
     SysUser findUserByAccount(String account);
 
     void saveUser(SysUser user);
+
+    UserVo findUserVoById(Long authorId);
 }

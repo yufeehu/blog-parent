@@ -8,6 +8,7 @@ import com.hyh.blog.service.TokenService;
 import com.hyh.blog.vo.ErrorCode;
 import com.hyh.blog.vo.LoginUserVo;
 import com.hyh.blog.vo.Result;
+import com.hyh.blog.vo.UserVo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +28,23 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Resource
     private TokenService tokenService;
+
+    @Override
+    public UserVo findUserVoById(Long authorId) {
+        SysUser sysUser = sysUserMapper.selectById(authorId);
+        //如果查询不到该文章的作者信息,默认佚名
+        if(Objects.isNull(sysUser)){
+            sysUser = new SysUser();
+            sysUser.setId(1L);
+            sysUser.setAvatar("/static/img/logo.b3a48c0.png");
+            sysUser.setNickname("佚名");
+        }
+        UserVo userVo = new UserVo();
+        userVo.setAvatar(sysUser.getAvatar());
+        userVo.setNickname(sysUser.getNickname());
+        userVo.setId(sysUser.getId());
+        return userVo;
+    }
 
     @Override
     public SysUser findUserById(Long authorId) {
