@@ -26,6 +26,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         //拦截器配置
         registry.addInterceptor(loginInterceptor)
-                .addPathPatterns("/test");
+                .addPathPatterns("/test")
+                //未登录时不能评论文章，拦截添加评论的接口
+                .addPathPatterns("/comments/create/change");
     }
 }

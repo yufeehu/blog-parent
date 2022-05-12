@@ -1,5 +1,7 @@
 package com.hyh.blog.vo;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
 
 import java.util.List;
@@ -11,6 +13,10 @@ import java.util.List;
 @Data
 public class CommentVo {
 
+    /**
+     * 分布式id，前端可能解析不了，出现精度损失，这里先转化为string
+     */
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
     /**

@@ -1,5 +1,6 @@
 package com.hyh.blog.service;
 
+import com.hyh.blog.dao.pojo.CommentParam;
 import com.hyh.blog.vo.Result;
 
 /**
@@ -12,4 +13,11 @@ public interface CommentsService {
      * @return
      */
     Result commentsByArticleId(Long articleId);
+
+    /**
+     * 添加评论
+     * @param param 评论的参数
+     * @return
+     */
+    Result insertComment(CommentParam param);
 }

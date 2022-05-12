@@ -3,8 +3,11 @@ package com.hyh.blog.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.hyh.blog.dao.mapper.CommentsMapper;
 import com.hyh.blog.dao.pojo.Comment;
+import com.hyh.blog.dao.pojo.CommentParam;
+import com.hyh.blog.dao.pojo.SysUser;
 import com.hyh.blog.service.CommentsService;
 import com.hyh.blog.service.SysUserService;
+import com.hyh.blog.util.UserThreadLocal;
 import com.hyh.blog.vo.CommentVo;
 import com.hyh.blog.vo.Result;
 import com.hyh.blog.vo.UserVo;
@@ -43,6 +46,29 @@ public class CommentsServiceImpl implements CommentsService {
         //将查询结果重新封装
         List<CommentVo> commentVos = copyList(comments);
         return Result.success(commentVos);
+    }
+
+    @Override
+    public Result insertComment(CommentParam param) {
+        Comment comment = new Comment();
+        SysUser user = UserThreadLocal.get();
+        comment.setArticleId(param.getArticleId());
+        comment.setAuthorId(user.getId());
+        comment.setContent(param.getContent());
+        comment.setCreateDate(System.currentTimeMillis());
+        comment.setParentId(param.getParent());
+        comment.setToUid(param.getToUserId());
+        Long parent = param.getParent();
+        if(parent == null || parent == 0){
+            comment.setLevel(1);
+        }else{
+            comment.setLevel(2);
+        }
+        comment.setParentId(parent == null ? 0 : parent);
+        Long toUserId = param.getToUserId();
+        comment.setToUid(toUserId == null ? 0 : toUserId);
+        commentsMapper.insert(comment);
+        return Result.success(null);
     }
 
     private List<CommentVo> copyList(List<Comment> comments) {
