@@ -10,4 +10,6 @@ public interface TagService {
     List<TagVo> findTagByArticleId(Long id);
 
     Result hotTags(int limit);
+
+    Result findAll();
 }

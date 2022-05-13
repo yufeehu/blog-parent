@@ -1,5 +1,6 @@
 package com.hyh.blog.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.hyh.blog.dao.mapper.TagMapper;
 import com.hyh.blog.dao.pojo.Tag;
 import com.hyh.blog.service.TagService;
@@ -40,6 +41,12 @@ public class TagServiceImpl implements TagService {
         List<Tag> tags = tagMapper.selectBatchIds(tagsId);
 //        log.info("tagsId=>{},{}",tagsId,tags);
         return Result.success(tags);
+    }
+
+    @Override
+    public Result findAll() {
+        List<Tag> tags = this.tagMapper.selectList(new LambdaQueryWrapper<>());
+        return Result.success(copyList(tags));
     }
 
     private List<TagVo> copyList(List<Tag> tagList) {

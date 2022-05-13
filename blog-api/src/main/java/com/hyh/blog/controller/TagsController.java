@@ -24,4 +24,9 @@ public class TagsController {
         return tagService.hotTags(limit);
     }
 
+    @GetMapping
+    public Result findAll(){
+        return tagService.findAll();
+    }
+
 }
