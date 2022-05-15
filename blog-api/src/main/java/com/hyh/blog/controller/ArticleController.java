@@ -2,12 +2,10 @@ package com.hyh.blog.controller;
 
 import com.hyh.blog.service.ArticleService;
 import com.hyh.blog.vo.Result;
+import com.hyh.blog.vo.param.ArticleParam;
 import com.hyh.blog.vo.param.PageParams;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author huyuhui
@@ -44,9 +42,18 @@ public class ArticleController {
     }
 
     @PostMapping("view/{id}")
-
     public Result findArticleById(@PathVariable("id") Long articleId){
         return articleService.findArticleById(articleId);
+    }
+
+    /**
+     * 未登录时不能发布文章，需要在拦截器添加该路径
+     * @param articleParam
+     * @return
+     */
+    @PostMapping("publish")
+    public Result publish(@RequestBody ArticleParam articleParam){
+        return articleService.publish(articleParam);
     }
 
 }

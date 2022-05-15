@@ -4,20 +4,27 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hyh.blog.dao.mapper.ArticleBodyMapper;
 import com.hyh.blog.dao.mapper.ArticleMapper;
+import com.hyh.blog.dao.mapper.ArticleTagMapper;
 import com.hyh.blog.dao.pojo.Article;
 import com.hyh.blog.dao.pojo.ArticleBody;
+import com.hyh.blog.dao.pojo.ArticleTag;
 import com.hyh.blog.dao.pojo.SysUser;
 import com.hyh.blog.dos.Archives;
 import com.hyh.blog.service.*;
+import com.hyh.blog.util.UserThreadLocal;
 import com.hyh.blog.vo.*;
+import com.hyh.blog.vo.param.ArticleParam;
 import com.hyh.blog.vo.param.PageParams;
 import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author huyuhui
@@ -41,6 +48,9 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Resource
     private ThreadService threadService;
+
+    @Resource
+    private ArticleTagMapper articleTagMapper;
 
     @Override
     public Result listArticlePage(PageParams pageParams) {
@@ -94,6 +104,54 @@ public class ArticleServiceImpl implements ArticleService {
         ArticleVo articleVo = copy(article,true,true,true,true);
         threadService.updateViewCount(articleMapper,article);
         return Result.success(articleVo);
+    }
+
+
+    @Override
+    @Transactional
+    public Result publish(ArticleParam articleParam) {
+        /**
+         * 1. 发布文章 目的 构建Article对象
+         * 2. 作者id  当前的登录用户
+         * 3. 标签  要将标签加入到 关联列表当中
+         * 4. body 内容存储 article bodyId
+         */
+        //获取当前用户信息
+        SysUser user = UserThreadLocal.get();
+        Article article = new Article();
+        article.setAuthorId(user.getId());
+        article.setCategoryId(articleParam.getCategory().getId());
+        article.setCreateDate(System.currentTimeMillis());
+        article.setCommentCounts(0);
+        article.setSummary(articleParam.getSummary());
+        article.setTitle(articleParam.getTitle());
+        article.setViewCounts(0);
+        article.setWeight(Article.Article_Common);
+        //文章插入之后，MP在数据库中存入一个自增的id,同时会自动返回id到实体类中
+        this.articleMapper.insert(article);
+        List<TagVo> tags = articleParam.getTags();
+        //标签
+        if(tags != null){
+            for (TagVo tag : tags) {
+                ArticleTag articleTag = new ArticleTag();
+                articleTag.setArticleId(article.getId());
+                articleTag.setTagId(tag.getId());
+                articleTagMapper.insert(articleTag);
+            }
+        }
+        //内容
+        ArticleBody articleBody = new ArticleBody();
+        articleBody.setContent(articleParam.getBody().getContent());
+        articleBody.setContentHtml(articleParam.getBody().getContentHtml());
+        articleBody.setArticleId(article.getId());
+        articleBodyMapper.insert(articleBody);
+        //内容插入完成后生成id
+        article.setBodyId(articleBody.getId());
+        //这里新增了内容id，需要再重新更新文章
+        articleMapper.updateById(article);
+        Map<String, Object> map = new HashMap<>();
+        map.put("id",article.getId().toString());
+        return Result.success(map);
     }
 
     /**

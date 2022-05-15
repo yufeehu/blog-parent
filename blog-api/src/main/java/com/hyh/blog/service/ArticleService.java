@@ -1,6 +1,7 @@
 package com.hyh.blog.service;
 
 import com.hyh.blog.vo.Result;
+import com.hyh.blog.vo.param.ArticleParam;
 import com.hyh.blog.vo.param.PageParams;
 
 /**
@@ -41,4 +42,6 @@ public interface ArticleService {
      * @return
      */
     Result findArticleById(Long articleId);
+
+    Result publish(ArticleParam articleParam);
 }
