@@ -1,5 +1,6 @@
 package com.hyh.blog.controller;
 
+import com.hyh.blog.common.aop.LogAnnotation;
 import com.hyh.blog.service.ArticleService;
 import com.hyh.blog.vo.Result;
 import com.hyh.blog.vo.param.ArticleParam;
@@ -18,6 +19,8 @@ public class ArticleController {
     private ArticleService articleService;
 
     @PostMapping
+    //自定义注解，标识需要记录的日志操作
+    @LogAnnotation(module = "文章",operation = "获取文章列表")
     public Result articles(PageParams pageParams){
         return articleService.listArticlePage(pageParams);
     }
