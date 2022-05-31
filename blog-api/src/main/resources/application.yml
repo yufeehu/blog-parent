@@ -12,6 +12,12 @@ spring:
     host: 192.168.83.128
     port: 6379
     password: 12345
+  servlet:
+    multipart:
+      #单个文件的最大值
+      max-file-size: 10MB
+      #上传文件总的最大值
+      max-request-size: 100MB
 #mp配置
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**Mapper.xml
@@ -32,3 +38,8 @@ thread:
     maxPoolSize: 20
     queueCapacity: 2000
     keepAliveSeconds: 60
+#七牛云
+qiniu:
+  accessKey: 8aFandd9xxnq3VLiiVui2wJKwDWtWNk0B1HsXeQj
+  secretKey: C0oj31fYatwDxZzw3cAb5KxPky9PTED07suxukhF
+  bucket: hyh-images
