@@ -17,4 +17,9 @@ public interface CategoryService {
      * @return
      */
     Result findAll();
+
+    /**
+     * @return
+     */
+    Result findAllDetail();
 }

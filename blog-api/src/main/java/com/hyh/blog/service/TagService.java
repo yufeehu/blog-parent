@@ -12,4 +12,6 @@ public interface TagService {
     Result hotTags(int limit);
 
     Result findAll();
+
+    Result findAllDetail();
 }
