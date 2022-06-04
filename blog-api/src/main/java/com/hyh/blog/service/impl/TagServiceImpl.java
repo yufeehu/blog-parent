@@ -57,6 +57,12 @@ public class TagServiceImpl implements TagService {
         return Result.success(tags);
     }
 
+    @Override
+    public Result tagsDetailById(Long id) {
+        Tag tag = tagMapper.selectById(id);
+        return Result.success(copy(tag));
+    }
+
     private List<TagVo> copyList(List<Tag> tagList) {
         List<TagVo> tagVoList = new ArrayList<>();
         for (Tag tag : tagList) {
