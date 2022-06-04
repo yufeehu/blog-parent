@@ -17,4 +17,15 @@ public class PageParams {
      * 每页条数
      */
     private int pageSize = 10;
+
+    /**
+     * 文章分类ID
+     */
+    private Long categoryId;
+
+
+    /**
+     * 文章标签ID
+     */
+    private Long tagId;
 }

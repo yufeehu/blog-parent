@@ -21,7 +21,7 @@ public class ArticleController {
     @PostMapping
     //自定义注解，标识需要记录的日志操作
     @LogAnnotation(module = "文章",operation = "获取文章列表")
-    public Result articles(PageParams pageParams){
+    public Result articles(@RequestBody PageParams pageParams){
         return articleService.listArticlePage(pageParams);
     }
 

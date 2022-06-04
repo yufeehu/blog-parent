@@ -22,4 +22,10 @@ public interface CategoryService {
      * @return
      */
     Result findAllDetail();
+
+    /**
+     * @param id categoryId
+     * @return
+     */
+    Result categoriesDetailById(Long id);
 }

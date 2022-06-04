@@ -56,6 +56,10 @@ public class ArticleServiceImpl implements ArticleService {
     public Result listArticlePage(PageParams pageParams) {
         Page<Article> page = new Page<>(pageParams.getPageNum(), pageParams.getPageSize());
         LambdaQueryWrapper<Article> wrapper = new LambdaQueryWrapper<>();
+        //如果pageParams中categoryId不为空时，加入cateforyId条件
+        if(pageParams.getCategoryId() != null){
+            wrapper.eq(Article::getCategoryId,pageParams.getCategoryId());
+        }
         wrapper.orderByDesc(Article::getCreateDate, Article::getWeight);
         //以时间和权重(是否置顶)进行排序
         Page<Article> articlePage = articleMapper.selectPage(page, wrapper);

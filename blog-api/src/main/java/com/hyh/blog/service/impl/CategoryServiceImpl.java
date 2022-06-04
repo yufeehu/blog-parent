@@ -43,6 +43,12 @@ public class CategoryServiceImpl implements CategoryService {
         return Result.success(categories);
     }
 
+    @Override
+    public Result categoriesDetailById(Long id) {
+        Category category = categoryMapper.selectById(id);
+        return Result.success(category);
+    }
+
     public CategoryVo copy(Category category){
         CategoryVo categoryVo = new CategoryVo();
         BeanUtils.copyProperties(category,categoryVo);
