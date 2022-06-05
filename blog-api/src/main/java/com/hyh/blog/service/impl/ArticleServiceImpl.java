@@ -1,6 +1,7 @@
 package com.hyh.blog.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hyh.blog.dao.mapper.ArticleBodyMapper;
 import com.hyh.blog.dao.mapper.ArticleMapper;
@@ -54,33 +55,9 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public Result listArticlePage(PageParams pageParams) {
-        Page<Article> page = new Page<>(pageParams.getPageNum(), pageParams.getPageSize());
-        LambdaQueryWrapper<Article> wrapper = new LambdaQueryWrapper<>();
-        //如果pageParams中categoryId不为空时，加入cateforyId条件
-        if(pageParams.getCategoryId() != null){
-            wrapper.eq(Article::getCategoryId,pageParams.getCategoryId());
-        }
-        //存储某一标签的所有文章id
-        ArrayList<Object> articleIdList = new ArrayList<>();
-        if(pageParams.getTagId() != null){
-            LambdaQueryWrapper<ArticleTag> queryWrapper = new LambdaQueryWrapper<>();
-            //通过一个tagId查询多条文章id(这里一个标签可以赋给多个文章)
-            queryWrapper.eq(ArticleTag::getTagId,pageParams.getTagId());
-            List<ArticleTag> articleTags = articleTagMapper.selectList(queryWrapper);
-            for (ArticleTag articleTag : articleTags) {
-                articleIdList.add(articleTag.getArticleId());
-            }
-            if(articleIdList.size() > 0){
-                wrapper.in(Article::getId,articleIdList);
-            }
-        }
-        wrapper.orderByDesc(Article::getCreateDate, Article::getWeight);
-        //以时间和权重(是否置顶)进行排序
-        Page<Article> articlePage = articleMapper.selectPage(page, wrapper);
-        List<Article> records = articlePage.getRecords();
-        //处理从数据库查询到结果，将Article实体类的数据转化为前端所需要ArticleVo实体类，这里需要自定义copyList方法
-        List<ArticleVo> articleVoList = copyList(records, true, true);
-        return Result.success(articleVoList);
+        Page<Article> page = new Page<>(pageParams.getPageNum(),pageParams.getPageSize());
+        IPage<Article> articleIPage = this.articleMapper.listArticle(page,pageParams.getCategoryId(),pageParams.getTagId(),pageParams.getYear(),pageParams.getMonth());
+        return Result.success(copyList(articleIPage.getRecords(),true,true));
     }
 
     @Override

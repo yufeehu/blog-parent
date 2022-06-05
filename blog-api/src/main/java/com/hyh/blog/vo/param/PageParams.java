@@ -28,4 +28,16 @@ public class PageParams {
      * 文章标签ID
      */
     private Long tagId;
+
+    private String year;
+
+    private String month;
+
+    public String getMonth(){
+        if(this.month != null && this.month.length() == 1){
+            return "0"+this.month;
+        }else{
+            return this.month;
+        }
+    }
 }
